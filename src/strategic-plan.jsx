@@ -500,7 +500,11 @@ const Label = ({ children, color }) => (
 
 // ─── MAIN COMPONENT ───
 export default function StrategicPlan() {
-  const [lang, setLang] = useState("es");
+  const [lang, setLang] = useState(() => {
+    const params = new URLSearchParams(window.location.search);
+    const l = params.get("lang");
+    return l === "en" || l === "es" ? l : "es";
+  });
   const [tab, setTab] = useState(0);
   const [phase, setPhase] = useState(0);
   const l = ui[lang];
@@ -887,7 +891,7 @@ export default function StrategicPlan() {
       {/* Hero */}
       <div style={{ background: "linear-gradient(165deg, #1A2E0A 0%, #2D5016 40%, #3A7D1E 100%)", padding: "40px 28px 32px", position: "relative", overflow: "hidden" }}>
         <div style={{ position: "absolute", top: -60, right: -40, width: 200, height: 200, borderRadius: "50%", background: "rgba(255,255,255,0.04)" }} />
-        <button onClick={() => setLang(lang === "es" ? "en" : "es")} style={{
+        <button onClick={() => { const next = lang === "es" ? "en" : "es"; setLang(next); const url = new URL(window.location); url.searchParams.set("lang", next); window.history.replaceState({}, "", url); }} style={{
           position: "absolute", top: 16, right: 16, zIndex: 5, border: "1px solid rgba(255,255,255,0.25)",
           borderRadius: 20, padding: "5px 14px", background: "rgba(255,255,255,0.1)", cursor: "pointer",
           fontFamily: s.font, fontSize: 11, fontWeight: 700, color: "#fff", letterSpacing: 1,
