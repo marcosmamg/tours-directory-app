@@ -1,20 +1,21 @@
+import { next } from '@vercel/edge';
+
 export default function middleware(request) {
   const password = process.env.BASIC_AUTH_PASSWORD;
 
   if (!password) {
-    return;
+    return next();
   }
 
   const auth = request.headers.get('authorization');
 
   if (auth) {
-    const [scheme, encoded] = auth.split(' ');
-    if (scheme === 'Basic') {
-      const decoded = atob(encoded);
-      const [, pwd] = decoded.split(':');
-      if (pwd === password) {
-        return;
-      }
+    const encoded = auth.replace(/^Basic\s+/i, '');
+    const decoded = atob(encoded);
+    const idx = decoded.indexOf(':');
+    const pwd = idx !== -1 ? decoded.slice(idx + 1) : '';
+    if (pwd === password) {
+      return next();
     }
   }
 
