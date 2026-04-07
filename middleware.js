@@ -1,5 +1,5 @@
 export default function middleware(request) {
-  const password = process.env.BASIC_AUTH_PASSWORD;
+  const password = (process.env.BASIC_AUTH_PASSWORD || '').trim();
 
   if (!password) {
     return;
